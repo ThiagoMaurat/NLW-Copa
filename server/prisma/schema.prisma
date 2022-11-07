@@ -20,3 +20,29 @@ model Pool {
   code      String   @unique //ensure its a unique field
   createdAt DateTime @default(now())
 }
+
+model Participant {
+  id String @id @default(cuid())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  avatarUrl String? //can be null
+  createdAt DateTime @default(now())
+}
+
+model Game {
+  id                    String   @id @default(cuid())
+  date                  DateTime
+  firstTeamoCountryCode String
+  secondTeamCountryCode String
+}
+
+model Guess {
+  id               String   @id @default(cuid())
+  firstTeamPoints  Int
+  secondTeamPoints Int
+  createdAt        DateTime @default(now())
+}
