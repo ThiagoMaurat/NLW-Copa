@@ -15,22 +15,34 @@ datasource db {
 }
 
 model Pool {
-  id        String   @id @default(cuid()) //primary key
-  title     String
-  code      String   @unique //ensure its a unique field
-  createdAt DateTime @default(now())
+  id           String        @id @default(cuid()) //primary key
+  title        String
+  code         String        @unique //ensure its a unique field
+  createdAt    DateTime      @default(now())
+  ownerId      String?
+  participants Participant[]
+  owner        User?         @relation(fields: [ownerId], references: [id])
 }
 
 model Participant {
-  id String @id @default(cuid())
+  id      String  @id @default(cuid())
+  userId  String
+  poolId  String
+  guesses Guess[]
+  user    User?   @relation(fields: [userId], references: [id])
+  pool    Pool    @relation(fields: [poolId], references: [id])
+
+  @@unique([userId, poolId]) // in this table will have only one registry
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  avatarUrl String? //can be null
-  createdAt DateTime @default(now())
+  id              String        @id @default(cuid())
+  name            String
+  email           String        @unique
+  avatarUrl       String? //can be null
+  createdAt       DateTime      @default(now())
+  participatingAt Participant[]
+  ownPools        Pool[]
 }
 
 model Game {
@@ -38,11 +50,16 @@ model Game {
   date                  DateTime
   firstTeamoCountryCode String
   secondTeamCountryCode String
+  guesses               Guess[]
 }
 
 model Guess {
-  id               String   @id @default(cuid())
+  id               String      @id @default(cuid())
   firstTeamPoints  Int
   secondTeamPoints Int
-  createdAt        DateTime @default(now())
+  createdAt        DateTime    @default(now())
+  gameId           String
+  participantId    String
+  participant      Participant @relation(fields: [participantId], references: [id])
+  game             Game        @relation(fields: [gameId], references: [id])
 }
