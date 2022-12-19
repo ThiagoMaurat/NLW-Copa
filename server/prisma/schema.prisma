@@ -43,6 +43,7 @@ model User {
   createdAt       DateTime      @default(now())
   participatingAt Participant[]
   ownPools        Pool[]
+  googleId String?
 }
 
 model Game {
